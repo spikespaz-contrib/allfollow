@@ -1,0 +1,25 @@
+name: Nix Flake
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  nix-flake-check:
+    name: Evaluate and build all outputs
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install Nix
+        uses: nixbuild/nix-quick-install-action@v32
+        with:
+          nix_conf: |
+            pure-eval = true
+            allow-import-from-derivation = false
+
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Evaluate and build all outputs
+        run: nix flake check --show-trace
